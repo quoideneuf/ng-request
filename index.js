@@ -1,14 +1,13 @@
-// This code borrows liberally from:
-// https://github.com/iriscouch/browser-request
+// Adapted from: https://github.com/iriscouch/browser-request
 
 (function() {
+
   var module = angular.module('ngRequest', []);
 
   module.factory('ngRequest', ['$http', function($http) {
 
     function request(options, callback) {
 
-      // The entry-point to the API: prep the options object and pass the real work to run_xhr.
       if(typeof callback !== 'function')
         throw new Error('Bad callback given: ' + callback)
       if(!options)
@@ -73,14 +72,29 @@
       }
       //END QS Hack
 
+      // Post Data
+      if(options.body){
+        options.data = angular.fromJson(options.body);
+      }
+
+      // Disable Angular's deserialization
+      options.transformResponse = function(data, headersGetter) {
+        return data;
+      };
+
       $http(options).success(function(data, status, headers, config) {
+
+        var statusObj = {
+          status: status,
+          statusCode: status
+        };
+
         var err;
-        options.callback(err, {status: status}, data);
+        options.callback(err, statusObj, data);
       }).error(function(data, status, headers, config) {
         var err = new Error(status);
         options.callback(err, {status: status}, data);
       });
-
     }
 
 
@@ -125,8 +139,6 @@
         return obj[method].call(obj, str)
       }
     }
-    
-    request.foo = "bar";
 
     return request;
   }]);
