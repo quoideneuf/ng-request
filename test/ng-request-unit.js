@@ -1,18 +1,17 @@
-describe("ngRequest", function() {
+describe('ngRequest', function() {
 
   var ngRequest, $httpBackend;
 
-  beforeEach(angular.mock.module("ngRequest"));
+  beforeEach(angular.mock.module('ngRequest'));
 
   beforeEach(inject(function($injector) {
-    $httpBackend = $injector.get("$httpBackend");
+    $httpBackend = $injector.get('$httpBackend');
 
-    ngRequest = $injector.get("ngRequest");
+    ngRequest = $injector.get('ngRequest');
 
 
-    $httpBackend.whenGET("/foo").respond(JSON.stringify({foo: true}));
-    $httpBackend.whenGET("/foo?bar=wtf").respond(JSON.stringify({foo: true, bar: true}));
-
+    $httpBackend.whenGET('/foo').respond(JSON.stringify({foo: true}));
+    $httpBackend.whenGET('/foo?bar=wtf').respond(JSON.stringify({foo: true, bar: true}));
 
   }));
 
@@ -23,7 +22,7 @@ describe("ngRequest", function() {
 
 
   describe('GET requests', function() {
-    it("should implement method GET", function() {
+    it('should implement method GET', function() {
       ngRequest({
         uri: '/foo',
         method: 'GET',
@@ -38,7 +37,7 @@ describe("ngRequest", function() {
     });
 
 
-    it("should implement GET with parameters", function() {
+    it('should implement GET with parameters', function() {
       ngRequest({
         uri: '/foo?bar=wtf',
       }, function(err, response, body) {
@@ -51,7 +50,7 @@ describe("ngRequest", function() {
 
     });
 
-    it("should implement request.get shortcut", function() {
+    it('should implement request.get shortcut', function() {
       ngRequest.get('/foo', function(err, response, body) {
         expect(response.status).toEqual(200);
         expect(body).toEqual(JSON.stringify({foo: true}));
@@ -65,7 +64,7 @@ describe("ngRequest", function() {
 
 
   describe('POST requests', function() {
-    it("should implement method POST", function() {
+    it('should implement method POST', function() {
       var barx;
       var bar = {
         name: 'sycamore',
@@ -84,4 +83,33 @@ describe("ngRequest", function() {
     });
   });
 
+
+  describe('Headers', function() {
+    it('sends headers', function() {
+      
+      ngRequest.get({
+        url: '/foo',
+        headers: {
+          one: 1,
+          two: 2,
+        }
+      }, function(err, response, body) {
+        expect(response.status).toEqual(200);
+        expect(body).toEqual(JSON.stringify({foo: true}));
+      });
+
+      $httpBackend.expectGET('/foo', function(headers) {
+        if(headers['one'] != 1)
+          return false;
+
+        if(headers['two'] != 2) 
+          return false;
+
+        return true;
+
+      });
+
+      $httpBackend.flush();
+    });
+  });
 });

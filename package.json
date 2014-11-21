@@ -1,7 +1,8 @@
 {
   "name": "ng-request",
-  "version": "0.0.0",
-  "description": "Wrap Angular's $http service mikeal's request interface",
+  "version": "0.0.1",
+  "description": "Wrap Angular's $http service up like request/request",
+  "repository": "https://github.com/quoideneuf/ng-request",
   "main": "index.js",
   "scripts": {
     "test": "grunt karma --verbose"
