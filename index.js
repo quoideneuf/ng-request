@@ -8,10 +8,17 @@
 
     function request(options, callback) {
 
-      if(typeof callback !== 'function')
-        throw new Error('Bad callback given: ' + callback)
       if(!options)
         throw new Error('No options given')
+
+      if(typeof callback != 'function' && callback.hasOwnProperty('form')) {
+        options.form = callback.form;
+        callback = arguments[2];
+      }
+        
+
+      if(typeof callback !== 'function')
+        throw new Error('Bad callback given: ' + callback)
 
       var options_onResponse = options.onResponse; // Save this for later.
 
@@ -53,29 +60,21 @@
           options.body = JSON.stringify(options.body)
       }
 
-      //BEGIN QS Hack
-      var serialize = function(obj) {
-        var str = [];
-        for(var p in obj)
-          if (obj.hasOwnProperty(p)) {
-            str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
-          }
-        return str.join("&");
-}
-      if(options.qs){
-        var qs = (typeof options.qs == 'string')? options.qs : serialize(options.qs);
-        if(options.uri.indexOf('?') !== -1){ //no get params
-          options.uri = options.uri+'&'+qs;
-        }else{ //existing get params
-          options.uri = options.uri+'?'+qs;
-        }
-      }
-      //END QS Hack
+      if(options.body && options.form)
+        throw new Error('request has payload and form data')
 
       // Post Data
       if(options.body){
         options.data = angular.fromJson(options.body);
       }
+
+      //URL encoded forms
+      if(options.form){
+        options.headers['content-type'] = 'application/x-www-form-urlencoded';
+        options.params = options.form
+      }
+
+      console.dir(options);
 
       // Disable Angular's deserialization
       options.transformResponse = function(data, headersGetter) {

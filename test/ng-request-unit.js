@@ -65,7 +65,6 @@ describe('ngRequest', function() {
 
   describe('POST requests', function() {
     it('should implement method POST', function() {
-      var barx;
       var bar = {
         name: 'sycamore',
         bartender: 'marco'
@@ -82,6 +81,28 @@ describe('ngRequest', function() {
       $httpBackend.flush();      
     });
   });
+
+
+  describe('Url-encoded forms', function() {
+    it('should support form data as the second argument', function() {
+      var form = {
+        form: {
+          foo: 'bar',
+        }
+      };
+
+      ngRequest.post('/bars', form, function(err, response, body) {
+        expect(response.status).toEqual(201);
+        expect(body.uri).toEqual('/bars/1');
+      });
+
+      $httpBackend.expectPOST('/bars?foo=bar').respond(201, {uri: '/bars/1'});
+      $httpBackend.flush();
+    });
+
+    // todo: other variations for calling post with form data
+  });
+      
 
 
   describe('Headers', function() {
