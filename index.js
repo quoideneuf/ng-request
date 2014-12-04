@@ -58,6 +58,11 @@
           options.body = JSON.stringify(options.json)
         else if(typeof options.body !== 'string')
           options.body = JSON.stringify(options.body)
+      } else {
+        // Disable Angular's deserialization
+        options.transformResponse = function(data, headersGetter) {
+          return data;
+        };
       }
 
       if(options.body && options.form)
@@ -75,11 +80,6 @@
       }
 
       console.dir(options);
-
-      // Disable Angular's deserialization
-      options.transformResponse = function(data, headersGetter) {
-        return data;
-      };
 
       $http(options).success(function(data, status, headers, config) {
 

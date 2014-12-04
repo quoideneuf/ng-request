@@ -77,7 +77,7 @@ describe('ngRequest', function() {
         expect(body.uri).toEqual('/bars/1');
       });
 
-      $httpBackend.expectPOST('/bars', bar).respond(201, {uri: '/bars/1'});
+      $httpBackend.expectPOST('/bars', bar).respond(201, JSON.stringify({uri: '/bars/1'}));
       $httpBackend.flush();      
     });
   });
