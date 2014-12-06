@@ -92,7 +92,13 @@
         options.callback(err, statusObj, data);
       }).error(function(data, status, headers, config) {
         var err = new Error(status);
-        options.callback(err, {status: status}, data);
+
+        var statusObj = {
+          status: status,
+          statusCode: status
+        };
+
+        options.callback(err, statusObj, data);
       });
     }
 

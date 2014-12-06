@@ -27,7 +27,7 @@ describe('ngRequest', function() {
         uri: '/foo',
         method: 'GET',
       }, function(err, response, body) {
-        expect(response.status).toEqual(200);
+        expect(response.statusCode).toEqual(200);
         expect(body).toEqual(JSON.stringify({foo: true}));
       });
 
@@ -41,7 +41,7 @@ describe('ngRequest', function() {
       ngRequest({
         uri: '/foo?bar=wtf',
       }, function(err, response, body) {
-        expect(response.status).toEqual(200);
+        expect(response.statusCode).toEqual(200);
         expect(body).toEqual(JSON.stringify({foo: true, bar: true}));
       });
 
@@ -52,7 +52,7 @@ describe('ngRequest', function() {
 
     it('should implement request.get shortcut', function() {
       ngRequest.get('/foo', function(err, response, body) {
-        expect(response.status).toEqual(200);
+        expect(response.statusCode).toEqual(200);
         expect(body).toEqual(JSON.stringify({foo: true}));
       });
 
@@ -73,7 +73,7 @@ describe('ngRequest', function() {
         url: '/bars', 
         json: bar
       }, function(err, response, body) {
-        expect(response.status).toEqual(201);
+        expect(response.statusCode).toEqual(201);
         expect(body.uri).toEqual('/bars/1');
       });
 
@@ -92,14 +92,14 @@ describe('ngRequest', function() {
       };
 
       ngRequest.post('/bars', form, function(err, response, body) {
-        expect(response.status).toEqual(201);
+        expect(response.statusCode).toEqual(201);
         expect(body.uri).toEqual('/bars/1');
       });
 
       $httpBackend.expectPOST('/bars?foo=bar').respond(201, {uri: '/bars/1'});
       $httpBackend.flush();
     });
-
+    
     // todo: other variations for calling post with form data
   });
       
