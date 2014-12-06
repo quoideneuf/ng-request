@@ -80,6 +80,21 @@ describe('ngRequest', function() {
       $httpBackend.expectPOST('/bars', bar).respond(201, JSON.stringify({uri: '/bars/1'}));
       $httpBackend.flush();      
     });
+
+    it('should not return an error as long as it gets a statusCode', function() {
+      var data = {}
+      ngRequest.post({
+        url: '/fail',
+        json: data
+      }, function(err, response, body) {
+        expect(typeof(err)).toEqual('undefined');
+        expect(response.statusCode).toEqual(412);
+      });
+
+      $httpBackend.expectPOST('/fail', data).respond(412, JSON.stringify({code: "SESSION GONE"}));
+      $httpBackend.flush();
+    });
+
   });
 
 

@@ -98,6 +98,9 @@
           statusCode: status
         };
 
+        if (statusObj.statusCode) 
+          err = undefined;
+
         options.callback(err, statusObj, data);
       });
     }
